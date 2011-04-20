@@ -1,0 +1,43 @@
+#! /usr/bin/env python
+
+import os, sys
+from optparse import OptionParser
+
+def main():
+
+    parser = OptionParser( usage="usage: %prog [ options ] [ editor_args (including file ]" )
+
+    # Set the directory in which to work
+    parser.add_option( '-e', '--editor', type='string', action='store', dest='editor', default='gedit',
+                       help="Set the selected editor to ED", metavar='ED' )
+
+    # Set the file name for the bundle
+    parser.add_option( '-l', '--log', type='string', action='store', dest='log', default='/dev/null',
+                       help="Redirect stdout from the editor to LOG", metavar='LOG' )
+
+    # Set the file name for the bundle
+    parser.add_option( '-r', '--err', type='string', action='store', dest='err', default='/dev/null',
+                       help="Redirect stderr from the editor to ERR", metavar='ERR' )
+
+    # Set the file name for the bundle
+    parser.add_option( '-v', '--verbose', action='store_true', dest='verbose', default=False,
+                       help="Print too much information" )
+
+    ( options, args ) = parser.parse_args()
+    
+    editor_argstring = ' '.join( parser.largs )
+    
+    if options.verbose:
+        print >> sys.stderr, "Using editor: %s" % options.editor
+        print >> sys.stderr, "Redirecting stdout from editor to: %s" % options.log
+        print >> sys.stderr, "Redirecting stderr from editor to: %s" % options.err
+        print >> sys.stderr, "Passing as args to editor: %s" % editor_argstring
+    
+    if os.system( 'which %s > /dev/null' % options.editor ) != 0:
+        parser.error( "No such editor found: %s" % options.editor )
+        
+    if os.system( 'nohup %s %s > %s 2> %s < /dev/null &' % ( options.editor, editor_argstring, options.log, options.err ) ) != 0:
+        parser.error( "Error opening edtior" )
+
+if __name__ == '__main__':
+    main()
