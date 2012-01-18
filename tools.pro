@@ -12,18 +12,26 @@ TEMPLATE = lib
 
 DEFINES += TOOLS_LIBRARY
 
-SOURCES += \
-           tools.cpp   \
-           cvtools.cpp \
-    localassert.cpp \
-    randmaster.cpp \
-    interval.cpp \
+SOURCES +=           \
+    qtools.cpp       \
+    cvtools.cpp      \
+    localassert.cpp  \
+    qlocalassert.cpp \
+    randmaster.cpp   \
+    interval.cpp     \
+    persist.cpp      \
+    utilities.cpp \
+    convert.cpp
 
-HEADERS += \
-           tools.h        \
-           cvtools.h      \
-           tools_global.h \
-    localassert.h \
-    randmaster.h \
-    interval.h \
-    persist.hpp \
+HEADERS +=           \
+    qtools.h         \
+    cvtools.h        \
+    tools_global.h   \
+    localassert.h    \
+    qlocalassert.h   \
+    randmaster.h     \
+    interval.h       \
+    persist.h        \
+    utilities.hpp    \
+    dbrep.hpp \
+    convert.hpp

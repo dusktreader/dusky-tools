@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utilities.hpp"
 
 /** A custom exception that is thrown when a local ASSERT fails */
 class LocalAssert: public std::exception
@@ -42,6 +43,8 @@ private:
 
     static LocalAssert::Status status;
 };
+
+
 
 /** Improves the assert() idiom by allowing it to be caught in a try block */
 #define ASSERT( expr )                                                \
