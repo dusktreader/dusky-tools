@@ -109,15 +109,18 @@ QDomElement PersistXML::createChild( QDomElement& parent, QString tag, QString n
 
 
 
-QMap<QString, QVariant> PersistXML::readPersistanceMap( QDomElement& parent, QString tag )
+QMap<QString, QVariant> PersistXML::readPersistanceMap( QDomElement parent, QString tag )
 {
     QDomElement child = fetchChild( parent, tag, "QMap<QString, QVariant>" );
 
     QMap<QString, QVariant> persistanceMap;
     QDomNodeList mapItems = child.childNodes();
 
-    foreach( QDomElement mapItem, mapItems )
+    bool ok = true;
+
+    for( int i=0; i<mapItems.count(); i++ )
     {
+        QDomElement mapItem = mapItems.item( i ).toElement();
         QString mapItemTag = mapItem.tagName();
         if( !mapItemTag.startsWith( MAP_KEY_PREFIX ) )
             continue;

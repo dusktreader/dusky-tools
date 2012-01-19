@@ -4,6 +4,7 @@
 
 #include "dummy.h"
 #include "dummyparent.h"
+#include "dummymapper.h"
 
 class PersistXMLTest : public QObject
 {
@@ -15,8 +16,9 @@ public:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
-    void readwrite_test();
-    void readwriteparent_test();
+    void readWrite_test();
+    void readWriteParent_test();
+    void readWriteMap_test();
 };
 
 PersistXMLTest::PersistXMLTest()
@@ -31,7 +33,7 @@ void PersistXMLTest::cleanupTestCase()
 {
 }
 
-void PersistXMLTest::readwrite_test()
+void PersistXMLTest::readWrite_test()
 {
     QFile f( "test.xml" );
     f.open( QFile::WriteOnly );
@@ -48,7 +50,7 @@ void PersistXMLTest::readwrite_test()
     QVERIFY( a == b );
 }
 
-void PersistXMLTest::readwriteparent_test()
+void PersistXMLTest::readWriteParent_test()
 {
     QFile f( "test2.xml" );
     f.open( QFile::WriteOnly );
@@ -60,6 +62,23 @@ void PersistXMLTest::readwriteparent_test()
     g.open( QFile::ReadOnly );
     DummyParent b( -1, -1.0, "-1", -1, -1.0, "-1" );
     b.load( g, "ParentPersistTest" );
+    g.close();
+
+    QVERIFY( a == b );
+}
+
+void PersistXMLTest::readWriteMap_test()
+{
+    QFile f( "test3.xml" );
+    f.open( QFile::WriteOnly );
+    DummyMapper a( 1, 2.0, "3" );
+    a.save( f, "MapPersistTest" );
+    f.close();
+
+    QFile g( "test3.xml" );
+    g.open( QFile::ReadOnly );
+    DummyMapper b( -1, -1.0, "-1" );
+    b.load( g, "MapPersistTest" );
     g.close();
 
     QVERIFY( a == b );

@@ -20,12 +20,14 @@ HEADERS +=    \
     persist.h \
     dummy.h   \
     localassert.h \
-    dummyparent.h
+    dummyparent.h \
+    dummymapper.h
 
 SOURCES += \
     tst_persistxml.cpp \
     persist.cpp \
     dummy.cpp \
     localassert.cpp \
-    dummyparent.cpp
+    dummyparent.cpp \
+    dummymapper.cpp
 

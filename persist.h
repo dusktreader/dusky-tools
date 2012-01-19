@@ -106,14 +106,14 @@ protected:
 
 
     /// Reads a map of generic items from an XML document
-    static QMap<QString, QVariant> Classifier::readPersistanceMap(
+    static QMap<QString, QVariant> readPersistanceMap(
             QDomElement parent, ///< The parent node under which to search for the particular child
             QString tag         ///< The tag that identifies the child node for which to search
             );
 
 
     /// Writes a map of generic items to an XML document
-    static void Classifier::writePersistanceMap(
+    static void writePersistanceMap(
             QDomElement& parent,                   ///< The parent node under which to search for the particular child
             QString tag,                           ///< The tag that identifies the child node for which to search
             QMap<QString, QVariant> persistanceMap ///< The map to be persisted to the XML document
