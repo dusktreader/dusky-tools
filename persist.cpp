@@ -106,3 +106,52 @@ QDomElement PersistXML::createChild( QDomElement& parent, QString tag, QString n
 
     return child;
 }
+
+
+
+QMap<QString, QVariant> PersistXML::readPersistanceMap( QDomElement& parent, QString tag )
+{
+    QDomElement child = fetchChild( parent, tag, "QMap<QString, QVariant>" );
+
+    QMap<QString, QVariant> persistanceMap;
+    QDomNodeList mapItems = child.childNodes();
+
+    foreach( QDomElement mapItem, mapItems )
+    {
+        QString mapItemTag = mapItem.tagName();
+        if( !mapItemTag.startsWith( MAP_KEY_PREFIX ) )
+            continue;
+        QString itemKey   = mapItemTag.remove( MAP_KEY_PREFIX );
+        QString itemType  = mapItem.attribute( "type" );
+        QString itemValueString = mapItem.attribute( "value" );
+        QVariant itemValue;
+        if( itemType == QVariant::typeToName( QVariant::Int ) )
+            itemValue = QVariant( itemValueString.toInt( &ok ) );
+        else if( itemType == QVariant::typeToName( QVariant::Double ) )
+            itemValue = QVariant( itemValueString.toDouble( &ok ) );
+        else if( itemType == QVariant::typeToName( QVariant::String ) )
+            itemValue = QVariant( itemValueString );
+        else
+            ABORT_MSG( "Type is not registered for PersistXML QMap<QString, QVariant> read" );
+        ASSERT_MSG( ok, "Couldn't convert map value" );
+
+        persistanceMap[itemKey] = itemValue;
+    }
+    return persistanceMap;
+}
+
+void PersistXML::writePersistanceMap( QDomElement& parent, QString tag, QMap<QString, QVariant> persistanceMap )
+{
+    QDomElement child = createChild( parent, tag, "QMap<QString, QVariant>" );
+
+    foreach( QString itemKey, persistanceMap.keys() )
+    {
+        QVariant itemValue = persistanceMap[itemKey];
+        QString itemTag = QString( "%1%2" ).arg( MAP_KEY_PREFIX ).arg( itemKey );
+        QDomElement mapItem = child.ownerDocument().createElement( itemTag );
+        mapItem.setAttribute( "type",  itemValue.typeName() );
+        mapItem.setAttribute( "value", itemValue.toString() );
+        child.appendChild( mapItem );
+    }
+    parent.appendChild( child );
+}

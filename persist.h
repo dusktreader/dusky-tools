@@ -11,6 +11,9 @@
 /// This is used to check the format of the XML files.  If changes are made to this clas, this flag should change
 #define FORMAT_VERSION "ADAM"
 
+/// This is used as a prefix for map containers keys in the XML files
+#define MAP_KEY_PREFIX "KEY."
+
 /// Provides persistence functionality and an API for easily persisting data in XML files.
 class PersistXML : public QObject
 {
@@ -100,4 +103,19 @@ protected:
     /// Performs any necessary post-write operations
     virtual void postWrite(){}
 
+
+
+    /// Reads a map of generic items from an XML document
+    static QMap<QString, QVariant> Classifier::readPersistanceMap(
+            QDomElement parent, ///< The parent node under which to search for the particular child
+            QString tag         ///< The tag that identifies the child node for which to search
+            );
+
+
+    /// Writes a map of generic items to an XML document
+    static void Classifier::writePersistanceMap(
+            QDomElement& parent,                   ///< The parent node under which to search for the particular child
+            QString tag,                           ///< The tag that identifies the child node for which to search
+            QMap<QString, QVariant> persistanceMap ///< The map to be persisted to the XML document
+            );
 };

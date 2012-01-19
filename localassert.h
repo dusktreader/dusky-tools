@@ -67,14 +67,14 @@ private:
       var = val; } \
 
 /** Breaks execution at this point */
-#define BAILOUT \
+#define ABORT \
     throw LocalAssert( std::string(" in function ") + PRINT_FUNC + \
                        "  of file " + __FILE__ +                   \
                        " at line " + num2str(__LINE__),            \
-                      "Broke Execution" );
+                      "Aborted" );
 
 /** Breaks execution at this point */
-#define BAILOUT_MSG( msg ) \
+#define ABORT_MSG( msg ) \
     throw LocalAssert( std::string(" in function ") + PRINT_FUNC + \
                        "  of file " + __FILE__ +                   \
                        " at line " + num2str(__LINE__),            \
