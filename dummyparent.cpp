@@ -8,6 +8,8 @@ DummyParent::DummyParent( int intVal, double doubleVal, QString stringVal,
     _child(childIntVal, childDoubleVal, childStringVal)
 {}
 
+
+
 void DummyParent::readData( QDomElement& element )
 {
     bool ok = true;
