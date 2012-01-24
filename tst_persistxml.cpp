@@ -5,6 +5,7 @@
 #include "dummy.h"
 #include "dummyparent.h"
 #include "dummymapper.h"
+#include "dummyvectorizer.h"
 
 class PersistXMLTest : public QObject
 {
@@ -19,6 +20,7 @@ private Q_SLOTS:
     void readWrite_test();
     void readWriteParent_test();
     void readWriteMap_test();
+    void readWriteVector_test();
 };
 
 PersistXMLTest::PersistXMLTest()
@@ -79,6 +81,23 @@ void PersistXMLTest::readWriteMap_test()
     g.open( QFile::ReadOnly );
     DummyMapper b( -1, -1.0, "-1" );
     b.load( g, "MapPersistTest" );
+    g.close();
+
+    QVERIFY( a == b );
+}
+
+void PersistXMLTest::readWriteVector_test()
+{
+    QFile f( "test4.xml" );
+    f.open( QFile::WriteOnly );
+    DummyVectorizer a( 1, 2.0, "3" );
+    a.save( f, "VectorPersistTest" );
+    f.close();
+
+    QFile g( "test4.xml" );
+    g.open( QFile::ReadOnly );
+    DummyVectorizer b( -1, -1.0, "-1" );
+    b.load( g, "VectorPersistTest" );
     g.close();
 
     QVERIFY( a == b );

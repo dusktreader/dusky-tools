@@ -25,6 +25,8 @@ public:
 
     QMap<QString, QVariant> valueMap() const { return _valueMap; }
 
+
+
 protected:
 
     virtual void readData( QDomElement& element );

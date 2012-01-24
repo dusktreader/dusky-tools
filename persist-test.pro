@@ -21,7 +21,8 @@ HEADERS +=    \
     dummy.h   \
     localassert.h \
     dummyparent.h \
-    dummymapper.h
+    dummymapper.h \
+    dummyvectorizer.h
 
 SOURCES += \
     tst_persistxml.cpp \
@@ -29,5 +30,6 @@ SOURCES += \
     dummy.cpp \
     localassert.cpp \
     dummyparent.cpp \
-    dummymapper.cpp
+    dummymapper.cpp \
+    dummyvectorizer.cpp
 

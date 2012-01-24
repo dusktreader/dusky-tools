@@ -158,3 +158,59 @@ void PersistXML::writePersistanceMap( QDomElement& parent, QString tag, QMap<QSt
     }
     parent.appendChild( child );
 }
+
+
+
+QVector<QVariant> PersistXML::readPersistanceVector( QDomElement parent, QString tag )
+{
+    QDomElement child = fetchChild( parent, tag, "QVector<QVariant>" );
+
+    bool ok = true;
+
+    int count = child.attribute( "count" ).toInt( &ok );
+    ASSERT_MSG( ok, "Couldn't extract vector size" );
+    QVector<QVariant> persistanceVector = QVector<QVariant>( count );
+
+    for( int i=0; i<count; i++ )
+    {
+        QString itemTag = QString( "%1%2" ).arg( VECTOR_INDEX_PREFIX ).arg( i );
+
+        QDomElement vectorItem = child.firstChildElement( itemTag );
+        ASSERT_MSG( !vectorItem.isNull(), "Vector is missing an element" );
+
+        QString itemType  = vectorItem.attribute( "type" );
+        QString itemValueString = vectorItem.attribute( "value" );
+        QVariant itemValue;
+        if( itemType == QVariant::typeToName( QVariant::Int ) )
+            itemValue = QVariant( itemValueString.toInt( &ok ) );
+        else if( itemType == QVariant::typeToName( QVariant::Double ) )
+            itemValue = QVariant( itemValueString.toDouble( &ok ) );
+        else if( itemType == QVariant::typeToName( QVariant::String ) )
+            itemValue = QVariant( itemValueString );
+        else
+            ABORT_MSG( "Type is not registered for PersistXML QVector<QVariant> read" );
+        ASSERT_MSG( ok, "Couldn't convert map value" );
+
+        persistanceVector[i] = itemValue;
+    }
+    return persistanceVector;
+}
+
+
+
+void PersistXML::writePersistanceVector( QDomElement& parent, QString tag, QVector<QVariant> persistanceVector )
+{
+    QDomElement child = createChild( parent, tag, "QVector<QVariant>" );
+    child.setAttribute( "count", persistanceVector.size() );
+
+    for( int i=0; i<persistanceVector.size(); i++ )
+    {
+        QVariant itemValue = persistanceVector[i];
+        QString itemTag = QString( "%1%2" ).arg( VECTOR_INDEX_PREFIX ).arg( i );
+        QDomElement vectorItem = child.ownerDocument().createElement( itemTag );
+        vectorItem.setAttribute( "type",  itemValue.typeName() );
+        vectorItem.setAttribute( "value", itemValue.toString() );
+        child.appendChild( vectorItem );
+    }
+    parent.appendChild( child );
+}

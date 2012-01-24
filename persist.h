@@ -14,6 +14,9 @@
 /// This is used as a prefix for map containers keys in the XML files
 #define MAP_KEY_PREFIX "KEY."
 
+/// This is used as a prefix for serial containers keys in the XML files
+#define VECTOR_INDEX_PREFIX "INDEX."
+
 /// Provides persistence functionality and an API for easily persisting data in XML files.
 class PersistXML : public QObject
 {
@@ -117,5 +120,21 @@ protected:
             QDomElement& parent,                   ///< The parent node under which to search for the particular child
             QString tag,                           ///< The tag that identifies the child node for which to search
             QMap<QString, QVariant> persistanceMap ///< The map to be persisted to the XML document
+            );
+
+
+
+    /// Reads a vectorof generic items from an XML document
+    static QVector<QVariant> readPersistanceVector(
+            QDomElement parent, ///< The parent node under which to search for the particular child
+            QString tag         ///< The tag that identifies the child node for which to search
+            );
+
+
+    /// Writes a map of generic items to an XML document
+    static void writePersistanceVector(
+            QDomElement& parent,                   ///< The parent node under which to search for the particular child
+            QString tag,                           ///< The tag that identifies the child node for which to search
+            QVector<QVariant> persistanceVector    ///< The map to be persisted to the XML document
             );
 };
