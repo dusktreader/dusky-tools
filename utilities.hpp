@@ -147,7 +147,15 @@ T pow2( const T& val )
 }
 
 
-char* wrap_text( char* str, int right_margin, int left_padding )
+
+/** @brief  Indents and Wraps a string within a margin
+ *  @todo   Write a c++ version of this function
+ */
+char* wrap_text_cstr(
+    char* str,        ///< The string to reformat
+    int right_margin, ///< The right margin to use for wrapping
+    int left_padding  ///< The indentation for the text
+    )
 {
     int span = right_margin - left_padding;
     int i = 0;

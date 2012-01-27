@@ -2,11 +2,16 @@
 
 #include "utilities.hpp"
 
-/** A custom exception that is thrown when a local ASSERT fails */
+/// A custom exception that is thrown when a local ASSERT fails
 class LocalAssert: public std::exception
 {
 public:
-    enum Status{ Error, NoError };
+
+    /// Defines the status of an assertion
+    enum Status{
+        Error,  ///< The assertion failed
+        NoError ///< The assertion passed
+        };
 
     /** Creates the exception with a default message */
     LocalAssert( std::string info = "Location unknown", std::string message = "Local Assertion Failed" );
@@ -43,6 +48,16 @@ private:
 
     static LocalAssert::Status status;
 };
+
+
+/// Verifies that a condition is true, otherwise it throws an exception with a descriptive message
+/// @todo: Consider adding c++0x features such as default template arguments
+inline void requireCondition( bool condition, std::string message="Required condition failed" )
+{
+    /// @note  This is simply a utility function that adds a great deal of readability ( the author's opinion )
+    if( !condition )
+        throw LocalAssert( "Location unknown", message );
+}
 
 
 
