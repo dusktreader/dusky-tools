@@ -1,5 +1,11 @@
 #pragma once
 
+#include <ctime>
+#include <cstdlib>
+#include <climits>
+#include <cfloat>
+#include <cmath>
+
 /** Convenience class used for generating random integers, and reals with uniform and gaussian distributions within
   * ranges defined when the functions are called
   *
@@ -34,8 +40,8 @@ public:
 
     /// Returns a random double with a uniform distribution in the specified range
     double randd(
-            float lo=0.0, ///< The low end of the range
-            float hi=1.0  ///< The high end of the range
+            double lo=0.0, ///< The low end of the range
+            double hi=1.0  ///< The high end of the range
             );
 
     /** Generates a random real value from within a gaussian distribution
