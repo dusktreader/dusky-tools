@@ -14,7 +14,7 @@ def main():
         config = ConfigParser() 
         config.read( os.path.dirname( __file__ ) + os.sep + 'drexer.cfg' )
         default_archive_dir = config.get( 'defaults', 'archive_dir' )
-        default_sites_dir   = config.get( 'defaults', 'extension_dir' )
+        default_extension_dir   = config.get( 'defaults', 'extension_dir' )
     except:
         pass
 
