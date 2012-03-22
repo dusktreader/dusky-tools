@@ -125,14 +125,14 @@ protected:
 
 
     /// Reads a vectorof generic items from an XML document
-    static QVector<QVariant> readPersistanceVector(
+    static QVector<QVariant> readVariantVector(
             QDomElement parent, ///< The parent node under which to search for the particular child
             QString tag         ///< The tag that identifies the child node for which to search
             );
 
 
     /// Writes a map of generic items to an XML document
-    static void writePersistanceVector(
+    static void writeVariantVector(
             QDomElement& parent,                   ///< The parent node under which to search for the particular child
             QString tag,                           ///< The tag that identifies the child node for which to search
             QVector<QVariant> persistanceVector    ///< The map to be persisted to the XML document

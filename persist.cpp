@@ -161,7 +161,7 @@ void PersistXML::writePersistanceMap( QDomElement& parent, QString tag, QMap<QSt
 
 
 
-QVector<QVariant> PersistXML::readPersistanceVector( QDomElement parent, QString tag )
+QVector<QVariant> PersistXML::readVariantVector( QDomElement parent, QString tag )
 {
     QDomElement child = fetchChild( parent, tag, "QVector<QVariant>" );
 
@@ -198,7 +198,7 @@ QVector<QVariant> PersistXML::readPersistanceVector( QDomElement parent, QString
 
 
 
-void PersistXML::writePersistanceVector( QDomElement& parent, QString tag, QVector<QVariant> persistanceVector )
+void PersistXML::writeVariantVector( QDomElement& parent, QString tag, QVector<QVariant> persistanceVector )
 {
     QDomElement child = createChild( parent, tag, "QVector<QVariant>" );
     child.setAttribute( "count", persistanceVector.size() );

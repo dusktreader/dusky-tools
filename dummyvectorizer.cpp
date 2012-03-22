@@ -10,12 +10,12 @@ DummyVectorizer::DummyVectorizer( int intVal, double doubleVal, QString stringVa
 
 void DummyVectorizer::readData( QDomElement& element )
 {
-    _valueVector = PersistXML::readPersistanceVector( element, "valueVector" );
+    _valueVector = PersistXML::readVariantVector( element, "valueVector" );
 }
 
 void DummyVectorizer::writeData( QDomElement &element )
 {
-    PersistXML::writePersistanceVector( element, "valueVector", _valueVector );
+    PersistXML::writeVariantVector( element, "valueVector", _valueVector );
 }
 
 bool DummyVectorizer::operator ==( const DummyVectorizer& other ) const
