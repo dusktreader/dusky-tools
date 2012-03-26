@@ -3,14 +3,24 @@
 import os, sys
 import subprocess as sp
 from argparse import ArgumentParser
+from ConfigParser import ConfigParser
 
 def main():
+
+    default_editor = 'NONE_SELECTED'
+    
+    try:
+        config = ConfigParser() 
+        config.read( os.path.realpath( os.path.dirname( __file__ ) ) + os.sep + 'nbedit.cfg' )
+        default_editor = config.get( 'defaults', 'editor' )
+    except:
+        pass
 
     parser = ArgumentParser( usage="usage: %(prog)s [ options ] [ editor_args ( including target file ) ]" )
 
     # Set the directory in which to work
     parser.add_argument( '-e', '--editor',
-                         action='store', default='gedit',
+                         action='store', default=default_editor,
                          help="Set the selected editor to ED", metavar='ED' )
 
     # Set the file name for the bundle
