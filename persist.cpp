@@ -109,7 +109,7 @@ QDomElement PersistXML::createChild( QDomElement& parent, QString tag, QString n
 
 
 
-QMap<QString, QVariant> PersistXML::readPersistanceMap( QDomElement parent, QString tag )
+QMap<QString, QVariant> PersistXML::readVariantMap( QDomElement parent, QString tag )
 {
     QDomElement child = fetchChild( parent, tag, "QMap<QString, QVariant>" );
 
@@ -143,7 +143,7 @@ QMap<QString, QVariant> PersistXML::readPersistanceMap( QDomElement parent, QStr
     return persistanceMap;
 }
 
-void PersistXML::writePersistanceMap( QDomElement& parent, QString tag, QMap<QString, QVariant> persistanceMap )
+void PersistXML::writeVariantMap( QDomElement& parent, QString tag, QMap<QString, QVariant> persistanceMap )
 {
     QDomElement child = createChild( parent, tag, "QMap<QString, QVariant>" );
 
@@ -169,7 +169,7 @@ QVector<QVariant> PersistXML::readVariantVector( QDomElement parent, QString tag
 
     int count = child.attribute( "count" ).toInt( &ok );
     ASSERT_MSG( ok, "Couldn't extract vector size" );
-    QVector<QVariant> persistanceVector = QVector<QVariant>( count );
+    QVector<QVariant> variantVector = QVector<QVariant>( count );
 
     for( int i=0; i<count; i++ )
     {
@@ -191,21 +191,22 @@ QVector<QVariant> PersistXML::readVariantVector( QDomElement parent, QString tag
             ABORT_MSG( "Type is not registered for PersistXML QVector<QVariant> read" );
         ASSERT_MSG( ok, "Couldn't convert map value" );
 
-        persistanceVector[i] = itemValue;
+        variantVector[i] = itemValue;
     }
-    return persistanceVector;
+    return variantVector;
 }
 
 
 
+void PersistXML::writeVariantVector( QDomElement& parent, QString tag, QVector<QVariant> variantVector )
 void PersistXML::writeVariantVector( QDomElement& parent, QString tag, QVector<QVariant> persistanceVector )
 {
     QDomElement child = createChild( parent, tag, "QVector<QVariant>" );
-    child.setAttribute( "count", persistanceVector.size() );
+    child.setAttribute( "count", variantVector.size() );
 
-    for( int i=0; i<persistanceVector.size(); i++ )
+    for( int i=0; i<variantVector.size(); i++ )
     {
-        QVariant itemValue = persistanceVector[i];
+        QVariant itemValue = variantVector[i];
         QString itemTag = QString( "%1%2" ).arg( VECTOR_INDEX_PREFIX ).arg( i );
         QDomElement vectorItem = child.ownerDocument().createElement( itemTag );
         vectorItem.setAttribute( "type",  itemValue.typeName() );
@@ -214,3 +215,5 @@ void PersistXML::writeVariantVector( QDomElement& parent, QString tag, QVector<Q
     }
     parent.appendChild( child );
 }
+
+
