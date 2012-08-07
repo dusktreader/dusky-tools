@@ -11,10 +11,6 @@
 #define PI 3.1415926535897931
 #endif
 
-#ifndef EPS
-#define EPS 1e-10
-#endif
-
 /** OS specific flags and etcetera */
 #if !defined(WIN32) || defined(__MINGW32__)
 #define PRINT_FUNC __PRETTY_FUNCTION__

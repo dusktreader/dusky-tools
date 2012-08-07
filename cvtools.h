@@ -1,3 +1,4 @@
+s
 #pragma once
 
 #include "cv.h"
@@ -24,8 +25,8 @@
 #define SHOWW( img )   { cv::namedWindow( #img, 0 ), cv::imshow( #img, img ); cv::waitKey(0); }
 #define SHOWN( img ) {  cv::namedWindow( #img, 0 ), cv::imshow( #img, img ); }
 
-#ifndef EPS
-#define EPS 1e-10
+#ifndef EPSILON
+#define EPSILON 1e-10
 #endif
 
 cv::Mat crop( const cv::Mat& src, const RectPlus<int>& roi );
