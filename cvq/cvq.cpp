@@ -1,7 +1,8 @@
-#include "cvqtools.h"
+#include "cvq.h"
 
 using namespace std;
 
+/*
 QPixmap cvMatToQPixmap( const cv::Mat& src, QSize size,
                         Qt::TransformationMode tmode, Qt::AspectRatioMode amode,
                         unsigned int trimBorder )
@@ -24,6 +25,7 @@ QPixmap cvMatToQPixmap( const cv::Mat& src, QSize size,
     }
     return QPixmap::fromImage( timg, Qt::ColorOnly );
 }
+*/
 
 QRect cvRectToQRect( const cv::Rect& cr )
 {
@@ -35,12 +37,44 @@ QPoint cvPointToQPoint( const cv::Point& cp )
     return QPoint( cp.x, cp.y );
 }
 
-cv::Rect  qRectToCvRect( const QRect& qr )
+cv::Rect  qRectToCvRect( QRect qr )
 {
     return cv::Rect( qr.x(), qr.y(), qr.width(), qr.height() );
 }
 
-cv::Point qPointToCvPoint( const QPoint& qp )
+cv::Point qPointToCvPoint( QPoint qp )
 {
     return cv::Point( qp.x(), qp.y() );
+}
+
+cv::Mat imageQrgb2CVdbl( QImage qImage )
+{
+    cv::Mat_<double> cvImage = cv::Mat_( qImage.height(), qImage.width(), 0.0 );
+    for( int i = 0; i < qImage.height(); i++ )
+    {
+        for( int j = 0; j < qImage.width(); j++ )
+        {
+            cvImage( i, j ) = qGray( qImage.pixel( j, i ) );
+        }
+    }
+
+    cv::normalize( cvImage, cvImage, 0.0, 1.1, cv::NORM_MINMAX);
+    return cvImage;
+}
+
+QImage imageCVdbl2Qrgb( cv::Mat_<double> cvImage )
+{
+    QImage qImage( cvImage.size().width, cvImage.size().height, QImage::Format_RGB888 );
+    for( int i = 0; i < qImage.height(); i++ )
+    {
+        for( int j = 0; j < qImage.width(); j++ )
+        {
+            double val = cvImage( i, j );
+            uchar r = val * 32.0 / 11.0;
+            uchar g = val * 32.0 / 16.0;
+            uchar b = val * 32.0 / 5.0;
+            qImage.setPixel( j, i, qRgb( r, g, b ) );
+        }
+    }
+    return qImage;
 }
