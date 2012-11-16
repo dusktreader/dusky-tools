@@ -127,10 +127,10 @@ def main():
         elif extension.endswith( '.zip' ):
 
             flag = ''
-            if args.verbose:
-                flag += 'v'
+            if not args.verbose:
+                flag = '-q'
                 
-            command = 'unzip -{flag} {archive_dir}{sep}{extension} -d {install_dir}'
+            command = 'unzip {flag} {archive_dir}{sep}{extension} -d {install_dir}'
             command = command.format( flag = flag,
                                       archive_dir = args.archive_dir,
                                       sep = os.sep,

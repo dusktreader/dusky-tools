@@ -1,6 +1,17 @@
 #pragma once
 
-#include "utilities.hpp"
+#include <exception>
+#include <string>
+
+#if !defined(WIN32) || defined(__MINGW32__)
+#define PRINT_FUNC __PRETTY_FUNCTION__
+#define OS_SEP_STR "/"
+#define OS_SEP_CHAR '/'
+#else
+#define OS_SEP_STR "\\"
+#define OS_SEP_CHAR '\\'
+#define PRINT_FUNC __FUNCSIG__
+#endif
 
 /// A custom exception that is thrown when a local ASSERT fails
 class LocalAssert: public std::exception
@@ -52,7 +63,7 @@ private:
 
 /// Verifies that a condition is true, otherwise it throws an exception with a descriptive message
 /// @todo: Consider adding c++0x features such as default template arguments
-inline void requireCondition( bool condition, std::string message="Required condition failed" )
+inline void localAssert( bool condition, std::string message="Required condition failed" )
 {
     /// @note  This is simply a utility function that adds a great deal of readability ( the author's opinion )
     if( !condition )

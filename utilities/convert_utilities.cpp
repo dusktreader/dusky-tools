@@ -1,4 +1,4 @@
-#include "convert.hpp"
+#include "convert_utilities.hpp"
 
 double d2r_factor = PI / 180.0;
 double r2d_factor = 1.0 / d2r_factor;
@@ -40,7 +40,7 @@ int char2Idx( char c )
 
 
 
-char idx2Char( int i, bool lowerCase=false )
+char idx2Char( int i, bool lowerCase )
 {
     ASSERT_MSG( i >=0 && i < 26, "Index exceeds range of standard alphabet" );
     char baseChar = lowerCase ? 'a' : 'A';

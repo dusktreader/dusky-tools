@@ -1,16 +1,17 @@
-#include "cvtools.h"
+#include "cv_utilities.hpp"
 
 using namespace std;
 
-cv::Mat crop( const cv::Mat& src, const RectPlus<int>& roi )
+cv::Mat crop( const cv::Mat& src, cv::Rect_<int> roi )
 {
     cv::Mat sub( roi.size(), src.type() );
     sub.setTo( 0 );
 
-    if( roi.right() <= 0 || roi.bottom() <= 0 || roi.left() > src.cols || roi.top() > src.rows )
+    if( roi.br().x <= 0 || roi.br().y <= 0 ||
+        roi.tl().x > src.cols || roi.tl().y > src.rows )
         return sub;
 
-    RectPlus<int> srcRoi, subRoi;
+    cv::Rect srcRoi, subRoi;
     srcRoi = roi;
 
     srcRoi.x = max( 0, roi.x );
@@ -28,74 +29,7 @@ cv::Mat crop( const cv::Mat& src, const RectPlus<int>& roi )
     return sub;
 }
 
-void tophat1D( const cv::Mat& src, cv::Mat& dst, int crownW, int brimW, int height, bool overX, bool overY, bool invert, bool norm, const cv::Mat& msk )
-{
-    ASSERT_MSG( src.cols > 0 && src.rows > 0, "The source image must have a valid size" );
-    ASSERT_MSG( msk.empty() || msk.size() == src.size(), "Mask must be the same size as the source image" );
-    ASSERT_MSG( height > 0 && height <=255, "The height must lie in the range [1..255]" );
-    ASSERT_MSG( crownW > 1, "The crown width must be greater than 2 " );
-    ASSERT_MSG( brimW > 0, "The brim width must be greater than 0" );
-    ASSERT_MSG( overX != overY, "X-wise or Y-wise operations are mutually exclusive" );
 
-    vector<cv::Mat> srcStack, dstStack;
-    cv::split( src, srcStack );
-    for( unsigned int idx=0; idx<srcStack.size(); idx++ )
-    {
-        cv::Mat wrk = srcStack[idx];
-        if( invert )
-            wrk = ~wrk;
-
-        int w, h;
-        h = w = 2 * brimW + crownW;
-
-        cv::Mat dst( wrk.size(), CV_8UC1 );
-        dst.setTo( 0 );
-
-        cv::Mat crownMaskX( cv::Size(w,1), CV_8UC1 );
-        for( int j=0; j<w; j++ )
-            crownMaskX.at<uchar>(0,j) = j >= brimW && j < w - brimW ? 255 : 0;
-        cv::Mat brimMaskX = ~crownMaskX;
-
-        cv::Mat crownMaskY( cv::Size(1,h), CV_8UC1 );
-        for( int i=0; i<h; i++ )
-            crownMaskY.at<uchar>(i,0) = i >= brimW && i < h - brimW ? 255 : 0;
-        cv::Mat brimMaskY = ~crownMaskY;
-
-        cv::Mat roiX, roiY;
-        cv::Scalar brimMean, crownMean;
-
-        #pragma omp parallel for private( roiX, roiY, brimMean, crownMean )
-        for( int i=h/2; i<wrk.rows-h/2; i++ )
-        {
-            for( int j=w/2; j<wrk.cols-w/2; j++ )
-            {
-                if( !msk.empty() && msk.at<uchar>(i,j) == 0 )
-                    continue;
-                if( overX )
-                {
-                    roiX = cv::Mat( wrk, cv::Rect(j-w/2,i,w,1) );
-                    brimMean = cv::mean( roiX, brimMaskX );
-                    crownMean = cv::mean( roiX, crownMaskX );
-                }
-
-                if( overY )
-                {
-                    roiY = cv::Mat( wrk, cv::Rect(j,i-h/2,1,h) );
-                    brimMean = cv::mean( roiY, brimMaskY );
-                    crownMean = cv::mean( roiY, crownMaskY );
-                }
-
-                int diff = (int)abs( crownMean[0] - brimMean[0] );
-                if( diff > height )
-                    dst.at<uchar>( i, j ) = diff;
-            }
-        }
-        if( norm )
-            cv::normalize( dst, dst, 0, 255, cv::NORM_MINMAX );
-        dstStack.push_back( dst );
-    }
-    cv::merge( dstStack, dst );
-}
 
 void makeHisto1D( const cv::Mat& src, vector<double>& hist, int binCt, const cv::Mat& msk )
 {
@@ -119,8 +53,6 @@ void makeHisto1D( const cv::Mat& src, vector<double>& hist, int binCt, const cv:
     {
         hist[i] /= N;
     }
-
-
 }
 
 void multiOtsu( const cv::Mat& src, cv::Mat& dst, int M )
@@ -215,7 +147,7 @@ void filterDoG( const cv::Mat& src, cv::Mat& dst, int size0, int size1 )
     dst = cv::abs( dog1 - dog2 );
 }
 
-cv::Mat drawPoints( const cv::Mat& src, vector< PointPlus<double> >& points, int radius, int width, cv::Scalar color )
+cv::Mat drawPoints( const cv::Mat& src, vector< cv::Point2d >& points, int radius, int width, cv::Scalar color )
 {
     cv::Mat ptImg;
     if( src.channels() == 1 )

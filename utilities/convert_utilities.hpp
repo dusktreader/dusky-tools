@@ -2,11 +2,11 @@
 
 #include <sstream>
 #include <string>
+#include <cmath>
+#include <vector>
 
-#include "utilities.hpp"
-#include "localassert.h"
-
-// Sarah Huggins  913-827-5430
+#include "tools/local_assert/local_assert.h"
+#include "math_utilities.hpp"
 
 /** Converts a number to a string
   * @param  number - The number to convert

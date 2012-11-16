@@ -2,7 +2,6 @@
 
 #include <QObject>
 #include <QtXml>
-#include <QSharedPointer>
 
 #include "utilities.hpp"
 #include "qlocalassert.h"
@@ -19,8 +18,11 @@
 #define VECTOR_INDEX_PREFIX "INDEX."
 
 /// Provides persistence functionality and an API for easily persisting data in XML files.
-class PersistXML
+class PersistXML : public QObject
 {
+    Q_OBJECT
+
+
 
 private:
 
@@ -34,7 +36,7 @@ private:
 public:
 
     /// Constructs this PersistXML object
-    PersistXML() : QObject(NULL){}
+    PersistXML( QObject* parent=NULL ) : QObject(parent){}
 
     /// Destructs this PersistXML
     virtual ~PersistXML(){}
@@ -107,14 +109,14 @@ protected:
 
 
     /// Reads a map of generic items from an XML document
-    static QMap<QString, QVariant> readVariantMap(
+    static QMap<QString, QVariant> readPersistanceMap(
             QDomElement parent, ///< The parent node under which to search for the particular child
             QString tag         ///< The tag that identifies the child node for which to search
             );
 
 
     /// Writes a map of generic items to an XML document
-    static void writeVariantMap(
+    static void writePersistanceMap(
             QDomElement& parent,                   ///< The parent node under which to search for the particular child
             QString tag,                           ///< The tag that identifies the child node for which to search
             QMap<QString, QVariant> persistanceMap ///< The map to be persisted to the XML document
@@ -135,54 +137,4 @@ protected:
             QString tag,                           ///< The tag that identifies the child node for which to search
             QVector<QVariant> persistanceVector    ///< The map to be persisted to the XML document
             );
-
-
-    /** @brief  Reads a vector of PersistXML type objects from an XML file
-      * @return A vector of QSharedPointer objects referencing the template class instances
-      * @note   T must be a derived type of PersistXML, and must have a valid default constructor.
-      */
-    template <class T>
-    QVector< QSharedPointer<T> > readPersistVector(
-            QDomElement parent, ///< The parent node under which to search for the particular child
-            QString tag         ///< The tag that identifies the child node for which to search
-            )
-    {
-        QDomElement child = fetchChild( parent, tag, "QVector<PersistXMLPtr>" );
-
-        int count = child.attribute( "count" ).toInt( &ok );
-        ASSERT_MSG( ok, "Couldn't extract vector size" );
-        QVector< QSharedPointer<T> > persistVector = QVector< QSharedPointer<T> >( count );
-
-        for( int i=0; i<count; i++ )
-        {
-            QString itemTag = QString( "%1%2" ).arg( VECTOR_INDEX_PREFIX ).arg( i );
-            persistVector[i] = QSharedPointer<T>( new T() );
-            persistVector[i]->read( child, itemTag );
-        }
-
-        return persistVector;
-    }
-
-
-
-    /** @brief  Writes a vector of PersistXML type objects from an XML file
-      * @note   T must be a derived type of PersistXML.
-      */
-    template <class T>
-    void writePersistVector(
-            QDomElement parent,                        ///< The parent node under which to store the particular child
-            QString tag,                               ///< The tag that identifies the child node to be stored
-            QVector< QSharedPointer<T> > persistVector ///< The vector of Persistance items to write
-            )
-    {
-        QDomElement child = createChild( parent, tag, "QVector<QVariant>" );
-        child.setAttribute( "count", persistVector.size() );
-
-        for( int i=0; i<persistVector.size(); i++ )
-        {
-            QString itemTag = QString( "%1%2" ).arg( VECTOR_INDEX_PREFIX ).arg( i );
-            persistVector[i]->write( child, itemTag );
-        }
-        parent.appendChild( child );
-    }
 };
