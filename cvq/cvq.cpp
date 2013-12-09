@@ -49,7 +49,7 @@ cv::Point qPointToCvPoint( QPoint qp )
 
 cv::Mat imageQrgb2CVdbl( QImage qImage )
 {
-    cv::Mat_<double> cvImage = cv::Mat_( qImage.height(), qImage.width(), 0.0 );
+    cv::Mat_<double> cvImage = cv::Mat_<double>( qImage.height(), qImage.width(), 0.0 );
     for( int i = 0; i < qImage.height(); i++ )
     {
         for( int j = 0; j < qImage.width(); j++ )
